@@ -1,6 +1,7 @@
 import os
 import sys
 import argparse
+import copy
 
 import torch
 
@@ -175,11 +176,17 @@ if __name__ == "__main__":
     model, criterion, postprocessors = build_model(args)
     model.eval()
     model.cuda()
+    
+    # # Compare state dictionaries
+    # if model_1 == model_2:
+    #     print("The models are the same.")
+    # else:
+    #     print("The models are different.")
 
-    # print(model)
 
-    y = model(torch.ones((1, 3, 512, 512)).cuda())
 
-    print(list(y.keys()))
-    print(y["pred_boxes"].shape)
-    print(y["pred_masks"].shape)
+    # y = model(torch.ones((1, 3, 512, 512)).cuda())
+
+    # print(list(y.keys()))
+    # print(y["pred_boxes"].shape)
+    # print(y["pred_masks"].shape)

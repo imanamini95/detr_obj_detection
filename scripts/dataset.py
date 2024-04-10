@@ -64,16 +64,9 @@ class COCODataset(torch.utils.data.Dataset):
         for i, item in enumerate(items):
             bbx = self.data["annotations"][item]["bbox"]
             bbx = self.correct_missed_annotation(bbx)
-            bbxs[i, :] = (bbx[0], bbx[1], bbx[0] + bbx[2], bbx[1] + bbx[3])
-
-        if self.debug_:
-            bbx_mask = np.zeros((self.target_shape))
-            bbx = bbxs[0, :]
-            x1, y1, x2, y2 = bbx
-            x1, y1 = int(x1), int(y1)
-            x2, y2 = int(x2), int(y2)
-            cv2.rectangle(bbx_mask, (x1, y1), (x2, y2), 255, thickness=2)
-            cv2.imwrite("./.debug/bbx.png", bbx_mask)
+            center_x = bbx[0] +  bbx[2] / 2
+            center_y = bbx[1] +  bbx[3] / 2
+            bbxs[i, :] = (center_x/self.shape[1], center_y/self.shape[0], bbx[2]/self.shape[1], bbx[3]/self.shape[0])
 
         bbxs = torch.tensor(bbxs).float()
         return bbxs
@@ -118,7 +111,8 @@ class COCODataset(torch.utils.data.Dataset):
         return seg_masks
 
     def __len__(self):
-        return len(self.data["images"])
+        # return len(self.data["images"])
+        return 100
 
     def __getitem__(self, idx):
         # get the image

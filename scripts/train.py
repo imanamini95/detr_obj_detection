@@ -43,10 +43,6 @@ def main(
 
     model, criterion, _ = build_model(args)
 
-    # model = torch.hub.load(
-    #     "facebookresearch/detr:main", "detr_resnet50", pretrained=True
-    # )
-
     # model.load_state_dict(
     #     torch.load(train_cfg.BEST_MODEL_PATH, map_location=train_cfg.DEVICE)
     # )
@@ -84,7 +80,7 @@ def main(
         if epoch != 0:
             loss_per_epoch(train_loss_list, val_loss_list, epoch, train_cfg)
 
-        train_loss, val_loss = train_epoch(
+        train_loss, val_loss, model = train_epoch(
             dataset_train,
             dataset_val,
             model,
@@ -102,5 +98,5 @@ def main(
 if __name__ == "__main__":
     # screen -S Experiment -L -Logfile ./.screenlogs/ExperimentPreTrained.log python ./scripts/train.py
     main(
-        save_folder_name="NO_PRETRAINED",
+        save_folder_name="NOPRETRAINED",
     )

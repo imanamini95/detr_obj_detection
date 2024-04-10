@@ -89,7 +89,7 @@ def train_epoch(
     if cfg.USE_SCHEDULER:
         scheduler.step()
 
-    return np.mean(mean_loss), np.mean(val_loss)
+    return np.mean(mean_loss), np.mean(val_loss), model
 
 
 def model_checkpoint(model, epoch, list_samples, cfg, mtype="model"):
@@ -178,14 +178,15 @@ def get_sample_results(sample, model, cfg, epoch, sample_idx):
     boxes = box_ops.box_cxcywh_to_xyxy(out_bbox)
     boxes = (boxes * 512).squeeze(0).cpu().numpy()
 
-    outputs_masks = predictions["pred_masks"].squeeze(2)
-    outputs_masks = F.interpolate(
-        outputs_masks, size=(512, 512), mode="bilinear", align_corners=False
-    )
-    outputs_masks = outputs_masks.sigmoid() > 0.5
-    masks = outputs_masks.squeeze(0).cpu().numpy()
-
-    # masks = np.zeros((boxes.shape[0], 512, 512))
+    if 'pred_masks' in predictions:
+        outputs_masks = predictions["pred_masks"].squeeze(2)
+        outputs_masks = F.interpolate(
+            outputs_masks, size=(512, 512), mode="bilinear", align_corners=False
+        )
+        outputs_masks = outputs_masks.sigmoid() > 0.5
+        masks = outputs_masks.squeeze(0).cpu().numpy()
+    else:
+        masks = np.zeros((boxes.shape[0], 512, 512))
 
     _, ax = plt.subplots(1, 2, figsize=(16, 8))
     ax[0].imshow(np.transpose(image, (1, 2, 0)))
