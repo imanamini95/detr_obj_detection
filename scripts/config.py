@@ -19,7 +19,7 @@ def get_train_cfg(folder_name="Test"):
     config.DATA_DIRECTORY = "./.coco_dataset/instances_train2017.json"
 
     config.BEST_MODEL_PATH = (
-        "C:/Projects/detr_object_detection/.models/detr-r50-panoptic-00ce5173.pth"
+        "./.models/detr-r50-panoptic-00ce5173.pth"
     )
 
     # PARAMETERS

@@ -41,7 +41,7 @@ def main(
     if args.output_dir:
         Path(args.output_dir).mkdir(parents=True, exist_ok=True)
 
-    model, criterion, postprocessors = build_model(args)
+    model, criterion, _ = build_model(args)
 
     # model = torch.hub.load(
     #     "facebookresearch/detr:main", "detr_resnet50", pretrained=True
@@ -50,15 +50,18 @@ def main(
     # model.load_state_dict(
     #     torch.load(train_cfg.BEST_MODEL_PATH, map_location=train_cfg.DEVICE)
     # )
+    
+    param_dicts = [
+        {"params": [p for n, p in model.named_parameters() if "backbone" not in n and p.requires_grad]},
+        {
+            "params": [p for n, p in model.named_parameters() if "backbone" in n and p.requires_grad],
+            "lr": args.lr_backbone,
+        },
+    ]
 
-    optimizer = optim.SGD(
-        model.parameters(),
-        lr=train_cfg.LEARNING_RATE,
-        momentum=train_cfg.MOMENTUM,
-        weight_decay=train_cfg.WEIGHT_DECAY,
-    )
-
-    scheduler = lr_scheduler.StepLR(optimizer, step_size=5, gamma=train_cfg.GAMMA)
+    optimizer = torch.optim.AdamW(param_dicts, lr=args.lr,
+                                  weight_decay=args.weight_decay)
+    scheduler = torch.optim.lr_scheduler.StepLR(optimizer, args.lr_drop)
 
     # Load dataset
     dataset_train = get_coco_dataset(train_cfg)
@@ -76,7 +79,7 @@ def main(
     val_loss_list = []
 
     for epoch in range(train_cfg.EPOCHS):
-        model_checkpoint(model, epoch, list_samples, train_cfg, postprocessors)
+        model_checkpoint(model, epoch, list_samples, train_cfg)
 
         if epoch != 0:
             loss_per_epoch(train_loss_list, val_loss_list, epoch, train_cfg)
@@ -97,6 +100,7 @@ def main(
 
 
 if __name__ == "__main__":
+    # screen -S Experiment -L -Logfile ./.screenlogs/ExperimentPreTrained.log python ./scripts/train.py
     main(
         save_folder_name="NO_PRETRAINED",
     )

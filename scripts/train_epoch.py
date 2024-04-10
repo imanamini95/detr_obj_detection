@@ -92,7 +92,7 @@ def train_epoch(
     return np.mean(mean_loss), np.mean(val_loss)
 
 
-def model_checkpoint(model, epoch, list_samples, cfg, postprocessors, mtype="model"):
+def model_checkpoint(model, epoch, list_samples, cfg, mtype="model"):
     """This function checks the model and saves the model weights and shows some image inferences.
 
     Args:
@@ -110,7 +110,7 @@ def model_checkpoint(model, epoch, list_samples, cfg, postprocessors, mtype="mod
     torch.save(model.state_dict(), output_save)
 
     for sample_idx, sample in enumerate(list_samples):
-        get_sample_results(sample, model, cfg, epoch, sample_idx, postprocessors)
+        get_sample_results(sample, model, cfg, epoch, sample_idx)
 
 
 def loss_per_epoch(train_loss_list, val_loss_list, epoch, cfg):
@@ -157,7 +157,7 @@ def add_train_samples(dataset_train, list_of_data):
     return list_of_data
 
 
-def get_sample_results(sample, model, cfg, epoch, sample_idx, postprocessors):
+def get_sample_results(sample, model, cfg, epoch, sample_idx):
     image, _ = sample
 
     model.eval()
