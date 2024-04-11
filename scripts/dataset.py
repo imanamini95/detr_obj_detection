@@ -112,7 +112,7 @@ class COCODataset(torch.utils.data.Dataset):
 
     def __len__(self):
         # return len(self.data["images"])
-        return 100
+        return 1
 
     def __getitem__(self, idx):
         # get the image

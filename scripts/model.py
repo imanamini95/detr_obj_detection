@@ -61,6 +61,14 @@ def get_args_parser():
         type=int,
         help="Number of decoding layers in the transformer",
     )
+    
+    parser.add_argument(
+        "--num_classes",
+        default=90,
+        type=int,
+        help="Number of classes",
+    )
+    
     parser.add_argument(
         "--dim_feedforward",
         default=2048,
@@ -92,7 +100,7 @@ def get_args_parser():
         "--masks",
         action="store_true",
         help="Train segmentation head if the flag is provided",
-        default=True,
+        default=False,
     )
 
     # Loss
@@ -100,6 +108,7 @@ def get_args_parser():
         "--no_aux_loss",
         dest="aux_loss",
         action="store_false",
+        default=False,
         help="Disables auxiliary decoding losses (loss at each layer)",
     )
     # * Matcher
@@ -137,7 +146,7 @@ def get_args_parser():
     parser.add_argument("--dataset_file", default="coco")
     parser.add_argument("--coco_path", type=str)
     parser.add_argument("--coco_panoptic_path", type=str)
-    parser.add_argument("--remove_difficult", action="store_true")
+    parser.add_argument("--remove_difficult", action="store_true", default=True)
 
     parser.add_argument(
         "--output_dir", default="", help="path where to save, empty for no saving"
@@ -150,7 +159,7 @@ def get_args_parser():
     parser.add_argument(
         "--start_epoch", default=0, type=int, metavar="N", help="start epoch"
     )
-    parser.add_argument("--eval", action="store_true")
+    parser.add_argument("--eval", action="store_true", default=False)
     parser.add_argument("--num_workers", default=2, type=int)
 
     # distributed training parameters

@@ -43,6 +43,10 @@ def main(
 
     model, criterion, _ = build_model(args)
 
+    # model = torch.hub.load(
+    #     "facebookresearch/detr:main", "detr_resnet50", pretrained=True
+    # )
+
     # model.load_state_dict(
     #     torch.load(train_cfg.BEST_MODEL_PATH, map_location=train_cfg.DEVICE)
     # )
@@ -98,5 +102,5 @@ def main(
 if __name__ == "__main__":
     # screen -S Experiment -L -Logfile ./.screenlogs/ExperimentPreTrained.log python ./scripts/train.py
     main(
-        save_folder_name="NOPRETRAINED",
+        save_folder_name="ONE_DATA",
     )

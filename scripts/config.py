@@ -21,6 +21,10 @@ def get_train_cfg(folder_name="Test"):
     config.BEST_MODEL_PATH = (
         "./.models/detr-r50-panoptic-00ce5173.pth"
     )
+    
+    config.BEST_MODEL_PATH = (
+        "./.results/ONE_DATA/epoch_160_model.pt"
+    )
 
     # PARAMETERS
     config.LEARNING_RATE = 1e-5

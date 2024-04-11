@@ -57,6 +57,7 @@ def train_epoch(
         losses.backward()
         torch.nn.utils.clip_grad_norm_(model.parameters(), 0.1)
         optimizer.step()
+    
 
         if batch_idx == len(train_dataset) - 1:
             for i in range(len(val_dataset)):
@@ -104,10 +105,11 @@ def model_checkpoint(model, epoch, list_samples, cfg, mtype="model"):
     check_path = cfg.ENS_CHECK_PATH if mtype == "ens" else cfg.CHECK_PATH
 
     # save the model
-    check_point_name = "epoch_" + str(epoch) + "_model.pt"
-    save_path = os.path.join(check_path, check_point_name)
-    output_save = open(save_path, mode="wb")
-    torch.save(model.state_dict(), output_save)
+    if epoch % 50 == 0:
+        check_point_name = "epoch_" + str(epoch) + "_model.pt"
+        save_path = os.path.join(check_path, check_point_name)
+        output_save = open(save_path, mode="wb")
+        torch.save(model.state_dict(), output_save)
 
     for sample_idx, sample in enumerate(list_samples):
         get_sample_results(sample, model, cfg, epoch, sample_idx)
@@ -134,10 +136,12 @@ def loss_per_epoch(train_loss_list, val_loss_list, epoch, cfg):
     axs.set_ylabel("Loss")
 
     plt.savefig(cfg.CHECK_PATH + "/loss_per_epoch.png")
+    plt.close()
 
 
 def collect_samples(dataset_val):
-    samples = [0, 2, 4, 6, 8]
+    # samples = [0, 2, 4, 6, 8]
+    samples = []
     list_of_data = []
 
     for item in samples:
@@ -148,7 +152,8 @@ def collect_samples(dataset_val):
 
 
 def add_train_samples(dataset_train, list_of_data):
-    samples = [0, 2, 4, 6, 8]
+    # samples = [0, 2, 4, 6, 8]
+    samples = [0]
 
     for item in samples:
         data = dataset_train[item]
